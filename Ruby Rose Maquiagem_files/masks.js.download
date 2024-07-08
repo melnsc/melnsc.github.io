@@ -1,0 +1,6 @@
+$(function(){$(".data").mask("99/99/9999");$(".tel").mask("(99) 9999-99999");$(".cel").mask("(99) 9999-99999");$(".cpf").mask("999.999.999-99");$(".cnpj").mask("99.999.999/9999-99");$(".cep").mask("99999-999");$(".cep-mask").mask("99999-999");$(".hora").mask("99:99:99");$(".cartao").mask("9999 9999 9999 9999");$(".amex").mask("9999 999999 99999");$(".money-format").maskMoney({thousands:'',decimal:',',affixesStay:false});});String.prototype.reverse=function(){return this.split('').reverse().join('');};function moneyFormat(field,mask){var fieldValue=field.value.replace(/[^\d]+/gi,'').reverse();var result_format="";mask=mask.reverse();var x=0,y=0;while(x<mask.length&&y<fieldValue.length){if(mask.charAt(x)!='#'){result_format+=mask.charAt(x);x++;}else{result_format+=fieldValue.charAt(y);y++;x++;}}
+field.value=result_format.reverse();if(field.value.length==2){field.value='0,'+field.value;}
+if(field.value[0]==0&&field.value[1]==0){for(var i=0,result_format="";i<=field.value.length-2;i++){result_format=result_format+field.value[i+1];}
+field.value=result_format;}
+if(field.value[0]==0&&field.value.length==5){for(var i=0,result_format="";i<=field.value.length-2;i++){result_format=result_format+field.value[i+1];}
+field.value=result_format;}}

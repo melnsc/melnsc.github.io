@@ -1,0 +1,25 @@
+var LocalStorageService=function(){StorageServiceInterface.call(this);this.lastResponse=null;this.lastError=null;this.setup=function(){return this;}
+this.has=function(key){if(!this.hasLocalStorage()){return false;}else if(helper.isEmpty(key)){this.lastError='No key were supplied for this method';return false;}
+var hasItem=false;try{var item=this.formatItem(key,localStorage.getItem(key));if(this.expired(item.expiration)){item=this.remove(item.key)?null:item;}
+this.lastResponse=item||this.lastResponse;hasItem=item?true:false;}catch(error){this.lastError=error;}
+return hasItem;};this.fetch=function(key){if(!this.hasLocalStorage()){return false;}else if(helper.isEmpty(key)){this.lastError='No key were supplied for this method';return false;}
+var item=null;try{var tempItem=localStorage.getItem(key);if(tempItem){tempItem=this.formatItem(key,tempItem);if(this.expired(tempItem.expiration)){tempItem=this.remove(tempItem.key)?null:tempItem;}
+item=tempItem;}
+this.lastResponse=item||this.lastResponse;}catch(error){console.error(error);this.lastError=error;}
+return item;};this.save=function(key,value,expiration){if(!this.hasLocalStorage()){return false;}else if(helper.isEmpty(key)){this.lastError='No key were supplied for this method';return false;}else if(value==null){this.lastError='The value parameter can not be null';return false;}
+expiration=expiration||null;var saved=false;try{var item=this.formatItem(key,value,expiration);if(item){item=JSON.stringify(item);}
+localStorage.setItem(key,item);this.lastResponse=item||this.lastResponse;saved=true;}catch(error){console.error(error);this.lastError=error;}
+return saved;};this.remove=function(key){if(!this.hasLocalStorage()){return false;}else if(helper.isEmpty(key)){this.lastError='No key were supplied for this method';return false;}
+var deleted=true;try{localStorage.removeItem(key);}catch(error){deleted=false;this.lastError=error;}
+return deleted;};this.hasLocalStorage=function(){if(typeof localStorage==='undefined'||!localStorage){this.lastError='There is no localStorage available on this browser';return false;}
+return true;}
+this.formatItem=function(key,value,expiration){if(helper.isEmpty(key)||value==null){return null;}
+try{value=JSON.parse(value);if(this.isStorageItem(value)){return value;}}catch(error){this.lastError=error;}
+expiration=expiration||null;if(helper.isNumeric(expiration)){expiration=Date.now()+expiration;}
+var item={key:key,value:value,expiration:expiration}
+return item;}
+this.isStorageItem=function(item){if(helper.isEmpty(item)){this.lastError='No item has been provided';return false;}else if(!('key'in item)||!('value'in item)||!('expiration'in item)){this.lastError='Item provided is not a StorageItem';return false;}
+return true;}
+this.expired=function(expiration){if(!helper.isNumeric(expiration)){return false;}else if(!(Date.now()>expiration)){return false;}
+return true;}}
+LocalStorageService.prototype=Object.create(StorageServiceInterface.prototype);LocalStorageService.prototype.constructor=(new LocalStorageService()).setup();

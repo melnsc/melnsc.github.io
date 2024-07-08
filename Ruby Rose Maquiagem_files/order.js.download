@@ -1,0 +1,20 @@
+var order={};order.senderForm="#order";order.singleSubmitForm="[data-single-submit]";order.blocked=false;order.htmlEncode=function(value){return $('<div/>').text(value).html();}
+order.htmlDecode=function(value){return $('<div/>').html(value).text();}
+order.blockSubmit=function(){order.blocked=true;if($(order.senderForm).length>0){var buttons=$(order.senderForm).find("[type='submit']");var tipopag=$(order.senderForm).find(".tipopag");if(buttons.length>0){$.each(buttons,function(index,el){el=$(el);var type=el.prop("tagName").toLowerCase();if(el.attr("data-value")==""||el.attr("data-value")==undefined){if(type=="input"){var value=el.attr("value");if(el.is(':disabled'))
+el.attr("data-disabled","true");el.attr("data-value",value);el.attr("value","Carregando...");el.prop("disabled",true);}
+else if(type=="button"){var value=order.htmlEncode(el.html());var icon=$("<i class=\"fa fa-refresh fa-spin\"></i>");if(el.is(':disabled'))
+el.attr("data-disabled","true");el.attr("data-value",value);el.html(icon);el.prop("disabled",true);}}});$.each(tipopag,function(index,el){el=$(el);var type=el.prop("tagName").toLowerCase();if(type=="input"){if(el.is(':disabled'))
+el.attr("data-disabled","true");el.prop("disabled",true);}});}}}
+order.unblockSubmit=function(){order.blocked=false;if($(order.senderForm).length>0){var buttons=$(order.senderForm).find("[type='submit']");var tipopag=$(order.senderForm).find("[type='radio']");if(buttons.length>0){$.each(buttons,function(index,el){el=$(el);var type=el.prop("tagName").toLowerCase();if(el.attr("data-value")!=""&&el.attr("data-value")!=undefined){if(type=="input"){var value=el.attr("data-value");el.attr("data-value","");el.attr("value",value);if(el.attr("data-disabled")=="true")
+el.attr("data-disabled","");else
+el.prop("disabled",false);}
+else if(type=="button"){var value=order.htmlDecode(el.attr("data-value"));el.attr("data-value","");el.html(value);if(el.attr("data-disabled")=="true")
+el.attr("data-disabled","");else
+el.prop("disabled",false);}}});$.each(tipopag,function(index,el){el=$(el);var type=tipopag.prop("tagName").toLowerCase();if(type=="input"){if(el.is(':disabled'))
+el.attr("data-disabled","false");el.prop("disabled",false);}});}}}
+order.bindSubmit=function(){$(document).on("submit",order.senderForm,function(e){if(order.blocked){e.preventDefault();return false;}});}
+order.bindAjaxEvents=function(){$(document).ajaxSuccess(function(event,xhr,settings){var url=settings.url;if(url.match("pedido\.php(.*?)act\=frete")){order.unblockSubmit();}});$(document).ajaxSend(function(event,xhr,settings){var url=settings.url;if(url.match("pedido\.php(.*?)act\=frete")){order.blockSubmit();}});}
+order.buildFieldSelector=function(){var selector=order.singleSubmitForm+" input,";var selector=selector+" select,";var selector=selector+" textarea";return selector;}
+order.singleSubmit=function(){$(document).on("submit",order.singleSubmitForm,function(e){var submitted=$(this).attr("[data-submitted]");var button=$(this).find("[type='submit']");if(submitted=="true"){e.preventDefault();return false;}
+$(this).attr("data-submitted","true");button.addClass("disabled");button.prop("disabled",true);});$(document).on("change",order.buildFieldSelector(),function(e){var button=$(order.singleSubmitForm).find("[type='submit']");$(this).attr("data-submitted","false");button.removeClass("disabled");button.prop("disabled",false);});}
+$(function(){order.bindAjaxEvents();order.bindSubmit();order.singleSubmit();});

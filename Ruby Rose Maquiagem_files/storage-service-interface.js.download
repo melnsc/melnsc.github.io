@@ -1,0 +1,1 @@
+var StorageServiceInterface=function(){this.has=function(key){};this.fetch=function(key){};this.save=function(key,value,expiration){expiration=expiration||null;};this.remove=function(key){};}

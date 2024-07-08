@@ -1,0 +1,4 @@
+var liveTracking={};liveTracking.getUrl=function(){var trackUrl="//liveecommerce.com.br/?utm_source=LogoLojas&utm_medium="+
+window.location.hostname+"&utm_campaign=Logos";return trackUrl;}
+liveTracking.getLogo=function(settings){var imgSrc="https://static.cdnlive.com.br/uploads/240/etc/16153073471058.png";settings.class==undefined?settings.class="":null;settings.version==undefined?settings.version="v1":null;settings.data==undefined?settings.data="":null;imgSrc="<img "+settings.data+"src='"+imgSrc+"' alt='Logo da Live Ecommerce' class='"+settings.class+"'>";return imgSrc;}
+liveTracking.showLogo=function(settings){settings==undefined?settings={"version":"v1","class":"","data":""}:null;var html="<a href='"+liveTracking.getUrl()+"' target='_blank' aria-label='Ir para a página da Live Ecommerce'>"+liveTracking.getLogo(settings)+"</a>";$('#live-logo').html(html);}
